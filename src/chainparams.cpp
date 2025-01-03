@@ -128,6 +128,35 @@ std::unique_ptr<const CChainParams> CreateChainParams(const ArgsManager& args, c
         ReadRegTestArgs(args, opts);
         return CChainParams::RegTest(opts);
     }
+    case ChainType::MAXCOIN: {  // Menambahkan MAXCOIN
+        // Timestamp untuk MaxCoin
+        const char* pszTimestamp = "MaxCoin Launch: The dawn of a new cryptocurrency!";
+        
+        // Membuat blok genesis MaxCoin
+        const CBlock genesis = CreateGenesisBlock(pszTimestamp, 1628602923, 2083236893, 0x1d00ffff, 1, 50 * COIN);
+
+        // Membuat CChainParams untuk MaxCoin
+        auto chainParams = std::make_unique<CChainParams>();
+
+        // Set base58 prefixes untuk MaxCoin
+        chainParams->base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1, 0x6F);  // Untuk MaxCoin
+        chainParams->base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1, 0xC4);  // Untuk MaxCoin
+        chainParams->base58Prefixes[SECRET_KEY] = std::vector<unsigned char>(1, 0xEF);      // Untuk MaxCoin
+        
+        // Menentukan block reward dan parameter lainnya sesuai MaxCoin
+        chainParams->consensus.nSubsidyHalvingInterval = 210000;
+        chainParams->consensus.nMaxReorganizationDepth = 100;
+        chainParams->consensus.nMinerConfirmationWindow = 2016;
+        chainParams->consensus.BIP34Height = 227931; // Update sesuai dengan blok tertentu
+        chainParams->consensus.BIP65Height = 388381; // Update sesuai dengan blok tertentu
+        chainParams->consensus.BIP66Height = 363725; // Update sesuai dengan blok tertentu
+        
+        // Set Genesis block dan hal lainnya sesuai MaxCoin
+        chainParams->consensus.hashGenesisBlock = genesis.GetHash();
+        
+        // Return MaxCoin CChainParams
+        return chainParams;
+    }
     }
     assert(false);
 }
